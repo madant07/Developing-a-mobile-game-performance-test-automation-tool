@@ -1,0 +1,83 @@
+function formatData() {
+  // 시트 가져오기
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  // A1:A57 데이터 가져오기
+  var rawData = sheet.getRange('A1:A57').getValues().flat();
+  
+  // 빈값이나 undefined 체크 함수
+  function getDataOrEmpty(data, index, splitter = '') {
+    if (data[index] !== undefined && data[index] !== null && data[index] !== '') {
+      if (splitter) {
+        var parts = data[index].split(splitter);
+        if (parts.length > 1) {
+          return parts[1].trim();
+        }
+      }
+      return data[index].trim();
+    } else {
+      return '0';  // 값이 없을 경우 0 반환
+    }
+  }
+
+  // 데이터를 가공하여 각 항목에 맞게 배열로 정리
+  var formattedData = [
+    "1. 애플리케이션 정보",
+    "PID: " + getDataOrEmpty(rawData, 0, 'PID '),
+    "패키지명: " + getDataOrEmpty(rawData, 2, '[PID ').split(' ')[0],
+    "그래픽 파이프라인: " + getDataOrEmpty(rawData, rawData.length - 3, '='),
+    "",
+    "2. 프레임 렌더링 통계",
+    "총 렌더링된 프레임: " + getDataOrEmpty(rawData, 5, ': '),
+    "Janky 프레임: " + getDataOrEmpty(rawData, 6, ': '),
+    "Janky 프레임 (legacy): " + getDataOrEmpty(rawData, 7, ': '),
+    "50번째 백분위수: " + getDataOrEmpty(rawData, 8, ': '),
+    "90번째 백분위수: " + getDataOrEmpty(rawData, 9, ': '),
+    "95번째 백분위수: " + getDataOrEmpty(rawData, 10, ': '),
+    "99번째 백분위수: " + getDataOrEmpty(rawData, 11, ': '),
+    "",
+    "3. 지연 원인 통계",
+    "Missed Vsync: " + getDataOrEmpty(rawData, 12, ': '),
+    "High input latency: " + getDataOrEmpty(rawData, 13, ': '),
+    "Slow UI thread: " + getDataOrEmpty(rawData, 14, ': '),
+    "Slow bitmap uploads: " + getDataOrEmpty(rawData, 15, ': '),
+    "Slow issue draw commands: " + getDataOrEmpty(rawData, 16, ': '),
+    "Frame deadline missed: " + getDataOrEmpty(rawData, 17, ': '),
+    "Frame deadline missed (legacy): " + getDataOrEmpty(rawData, 18, ': '),
+    "",
+    "4. CPU와 GPU 통계",
+    "CPU 캐시 메모리:",
+    getDataOrEmpty(rawData, 22),
+    getDataOrEmpty(rawData, 23),
+    "총 CPU 메모리 사용량: " + getDataOrEmpty(rawData, 25),
+    "",
+    "GPU 통계:",
+    "총 GPU 메모리 사용량: " + getDataOrEmpty(rawData, 29),
+    "50번째 백분위수: " + getDataOrEmpty(rawData, 30, ': '),
+    "90번째 백분위수: " + getDataOrEmpty(rawData, 31, ': '),
+    "95번째 백분위수: " + getDataOrEmpty(rawData, 32, ': '),
+    "99번째 백분위수: " + getDataOrEmpty(rawData, 33, ': '),
+    "",
+    "5. 히스토그램 (프레임 시간)",
+    "프레임 시간 분포 (ms):",
+    getDataOrEmpty(rawData, 35),
+    getDataOrEmpty(rawData, 36),
+    getDataOrEmpty(rawData, 37),
+    getDataOrEmpty(rawData, 38),
+    "",
+    "6. View Hierarchy 정보",
+    "총 ViewRootImpl: " + getDataOrEmpty(rawData, 53, ': '),
+    "총 View: " + getDataOrEmpty(rawData, 54, ': '),
+    "총 RenderNode 메모리 사용량: " + getDataOrEmpty(rawData, 55, ': '),
+    "",
+    "7. 디바이스 화면 정보",
+    "화면 해상도: " + getDataOrEmpty(rawData, rawData.length - 11, '='),
+    "디스플레이 회전: " + getDataOrEmpty(rawData, rawData.length - 9, '='),
+    "",
+    "8. 파이프라인 정보",
+    "그래픽 파이프라인: " + getDataOrEmpty(rawData, rawData.length - 3, '=')
+  ];
+
+  // C1부터 포맷된 데이터 붙여넣기
+  sheet.getRange(1, 3, formattedData.length, 1).setValues(formattedData.map(item => [item]));
+}
