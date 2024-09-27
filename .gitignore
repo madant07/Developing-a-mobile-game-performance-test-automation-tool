@@ -7,7 +7,7 @@ import time
 
 # 성능 데이터 수집 함수 (ADB 명령어 실행)
 def collect_performance_data():
-    # ADB 명령어로 프레임 속도 수집
+    # ADB 명령어 실행 (프레임 속도 수집)
     result = subprocess.run(['adb', 'shell', 'dumpsys', 'gfxinfo', 'com.Cryptect.Mercenary'], capture_output=True, text=True)
     
     # 수집한 데이터를 지정된 경로에 성능 로그 파일로 저장
@@ -25,9 +25,6 @@ def collect_performance_data():
     with open(log_file_path, 'a') as file:
         file.write(f"\n메모리 사용량: {memory_usage.stdout}")
     
-    # GPU 사용량 (필요 시 추가적으로 사용되는 API나 그래픽 라이브러리 필요)
-    # GPU 사용량은 일반적인 adb 명령어로는 측정하기 어렵고, 추가적으로 특정 그래픽 프로파일러 사용을 권장
-
     # 배터리 사용량 수집
     battery_info = subprocess.run(['adb', 'shell', 'dumpsys', 'battery'], capture_output=True, text=True)
     with open(log_file_path, 'a') as file:
@@ -47,6 +44,35 @@ def collect_performance_data():
     frame_drop_info = subprocess.run(['adb', 'shell', 'dumpsys', 'gfxinfo', 'com.Cryptect.Mercenary', '|', 'grep', 'Janky'], capture_output=True, text=True)
     with open(log_file_path, 'a') as file:
         file.write(f"\n프레임 드롭 빈도: {frame_drop_info.stdout}")
+
+# 특이사항 발생 시 스크린샷을 촬영하는 함수
+def take_screenshot(driver, issue_desc):
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    screenshot_path = f'C:/Users/bobGate/Downloads/테스트 자동화 로그파일/screenshot_{issue_desc}_{timestamp}.png'
+    driver.save_screenshot(screenshot_path)
+    print(f"특이사항 발생: {issue_desc}, 스크린샷 저장 위치: {screenshot_path}")
+
+# 특이사항을 체크하는 함수 (FPS, CPU, 메모리 등)
+def check_for_anomalies():
+    # FPS가 30 이하로 떨어졌을 때
+    fps = 25  # 예시로 FPS를 직접 설정 (실제는 FPS 수집 함수 필요)
+    if fps < 30:
+        take_screenshot(driver, "Low_FPS")
+
+    # CPU 사용량이 90% 이상일 때
+    cpu_usage = 92  # 예시로 CPU 사용량 직접 설정 (실제는 수집 함수 필요)
+    if cpu_usage > 90:
+        take_screenshot(driver, "High_CPU_Usage")
+
+    # 메모리 사용량이 1GB 이상일 때
+    memory_usage = 1200  # 예시로 메모리 사용량 직접 설정 (실제는 수집 함수 필요)
+    if memory_usage > 1024:
+        take_screenshot(driver, "High_Memory_Usage")
+
+    # 배터리 온도가 40도 이상일 때
+    temperature = 42  # 예시로 온도를 직접 설정 (실제는 수집 함수 필요)
+    if temperature > 40:
+        take_screenshot(driver, "High_Temperature")
 
 # Appium 옵션 설정 (capabilities)
 options = UiAutomator2Options()
@@ -129,6 +155,9 @@ while remaining_time > 0:
     time.sleep(60)
     remaining_time -= 60
     print(f"남은 시간: {remaining_time}초")
+
+    # 특이사항 체크
+    check_for_anomalies()
 
 # 성능 데이터 수집 함수 실행
 collect_performance_data()
