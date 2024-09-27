@@ -100,67 +100,102 @@ def tap_at_coordinates(x, y):
     actions.w3c_actions.pointer_action.pointer_down()
     actions.w3c_actions.pointer_action.pointer_up()
     actions.perform()
+    time.sleep(3)  # 각 동작 후 3초 대기
 
-# 1. X 232 / Y 897 터치
-tap_at_coordinates(232, 897)
-time.sleep(5)  # 5초 대기
+# 좌표 기반의 터치 시퀀스 실행
+tap_at_coordinates(304, 879)  # 아이디 창 터치
+tap_at_coordinates(1848, 417)  # 키보드 텍스트 입력창 터치
 
-# 2. X 892 / Y 405 터치
-tap_at_coordinates(892, 405)
-time.sleep(5)  # 5초 대기
+# '지우기' 반복 5회
+for _ in range(5):
+    tap_at_coordinates(1851, 668)  # 지우기
 
-# 3. X 2133 / Y 925 20번 터치
-for _ in range(20):
-    tap_at_coordinates(2133, 925)
-    time.sleep(5)  # 5초 대기
+# 텍스트 입력 (좌표 기반)
+tap_at_coordinates(1607, 926)  # B 입력
+tap_at_coordinates(2076, 826)  # L 입력
+tap_at_coordinates(1607, 926)  # B 입력
+tap_at_coordinates(2155, 645)  # 0 입력
+tap_at_coordinates(291, 645)  # 1 입력
+tap_at_coordinates(291, 645)  # 1 입력
+tap_at_coordinates(2165, 413)  # 확인 터치
+tap_at_coordinates(529, 922)  # 로그인 터치
+tap_at_coordinates(529, 922)  # 로그인 한번 더 터치
 
-# 4. X 1622 / Y 929 터치
-tap_at_coordinates(1622, 929)
-time.sleep(5)  # 5초 대기
+# 30초 대기
+time.sleep(30)
 
-# 5. X 2083 / Y 829 터치
-tap_at_coordinates(2083, 829)
-time.sleep(5)  # 5초 대기
+# 공지 및 창 닫기 시퀀스
+tap_at_coordinates(1937, 99)  # 공지 닫기
+tap_at_coordinates(1150, 813)  # 오프라인 보상 획득
+tap_at_coordinates(1150, 813)  # 재화창 닫기
+tap_at_coordinates(162, 56)  # 프로필 열기
+tap_at_coordinates(1904, 119)  # 프로필 닫기
+tap_at_coordinates(208, 380)  # 시즌 정보 열기
+tap_at_coordinates(1792, 149)  # 시즌 정보 닫기
+tap_at_coordinates(112, 552)  # 퀘스트 열기
+tap_at_coordinates(2245, 46)  # 퀘스트 닫기
+tap_at_coordinates(119, 701)  # 랭킹 열기
+tap_at_coordinates(2245, 46)  # 랭킹 닫기
 
-# 6. X 1622 / Y 929 터치
-tap_at_coordinates(1622, 929)
-time.sleep(5)  # 5초 대기
+# 이벤트 관련 시퀀스
+tap_at_coordinates(2013, 635)  # 이벤트 열기
+time.sleep(10)  # 10초 대기
+tap_at_coordinates(1993, 165)  # 이벤트 닫기
+tap_at_coordinates(2188, 635)  # 패스 열기
+tap_at_coordinates(2245, 46)  # 패스 닫기
+tap_at_coordinates(2010, 810)  # 한정 패스 열기
+tap_at_coordinates(2245, 46)  # 한정 닫기
 
-# 7. X 2163 / Y 650 터치
-tap_at_coordinates(2163, 650)
-time.sleep(5)  # 5초 대기
+# 상점 관련 시퀀스
+tap_at_coordinates(2188, 813)  # 상점 열기
+tap_at_coordinates(202, 278)  # 상점 한정 패키지 탭
+tap_at_coordinates(202, 380)  # 패키지 탭
+tap_at_coordinates(202, 489)  # 성장 패키지 탭
+tap_at_coordinates(202, 598)  # 특별 재화 탭
+tap_at_coordinates(2245, 46)  # 상점 닫기
 
-# 8. X 285 / Y 650 터치
-tap_at_coordinates(285, 650)
-time.sleep(5)  # 5초 대기
+# 소환 관련 시퀀스
+tap_at_coordinates(787, 1045)  # 소환 진입
+tap_at_coordinates(1643, 1005)  # 픽업 캐릭터 10회 소환
+tap_at_coordinates(2218, 69)  # 소환 건너뛰기
+tap_at_coordinates(2245, 46)  # 소환 닫기
+tap_at_coordinates(2245, 46)  # 소환 아예 닫기
 
-# 9. X 2176 / Y 411 터치
-tap_at_coordinates(2176, 411)
-time.sleep(5)  # 5초 대기
+# 용병단 관련 시퀀스
+tap_at_coordinates(1174, 1045)  # 용병단 팝업
+tap_at_coordinates(374, 288)  # 장비 세팅
+tap_at_coordinates(374, 400)  # 크리처
+time.sleep(10)  # 10초 대기
+tap_at_coordinates(374, 509)  # 태초의 코어
+tap_at_coordinates(374, 608)  # 단장 스킬
+tap_at_coordinates(374, 714)  # 용병단 랭크
+tap_at_coordinates(374, 813)  # 배낭
+tap_at_coordinates(374, 922)  # 캐릭터
 
-# 10. X 521 / Y 929 터치
-tap_at_coordinates(521, 929)
-time.sleep(5)  # 5초 대기
+# 모험 관련 시퀀스
+tap_at_coordinates(1940, 1045)  # 모험
+tap_at_coordinates(2053, 66)  # 포탈
+tap_at_coordinates(919, 608)  # 스토리
+tap_at_coordinates(1775, 969)  # 소탕 버튼 터치
+tap_at_coordinates(1154, 721)  # 소탕
+tap_at_coordinates(1154, 721)  # 보상 팝업 종료
+tap_at_coordinates(2245, 46)  # 스토리 닫기
 
-# 11. X 521 / Y 929 터치 (다시 터치)
-tap_at_coordinates(521, 929)
-time.sleep(30)  # 30초 대기
+# 탐험 관련 시퀀스
+tap_at_coordinates(2053, 66)  # 포탈
+tap_at_coordinates(1392, 407)  # 탐험
+tap_at_coordinates(1848, 1015)  # 소탕 버튼 터치
+tap_at_coordinates(1154, 721)  # 소탕
+tap_at_coordinates(1154, 721)  # 보상 팝업 종료
+tap_at_coordinates(2245, 46)  # 탐험 닫기
 
-# 12. X 1924 / Y 1048 터치
-tap_at_coordinates(1924, 1048)
+# 챌린지 관련 시퀀스
+tap_at_coordinates(2053, 66)  # 포탈
+tap_at_coordinates(1861, 410)  # 챌린지
+tap_at_coordinates(2129, 1015)  # 챌린지 도전
 
-# 600초 동안 카운트다운 (60초마다 남은 시간 출력)
-remaining_time = 600
-while remaining_time > 0:
-    time.sleep(60)
-    remaining_time -= 60
-    print(f"남은 시간: {remaining_time}초")
+# 6000초 대기 (100분)
+time.sleep(6000)
 
-    # 특이사항 체크
-    check_for_anomalies()
-
-# 성능 데이터 수집 함수 실행
-collect_performance_data()
-
-# 테스트 종료 (Appium 세션 종료)
+# 테스트 종료
 driver.quit()
