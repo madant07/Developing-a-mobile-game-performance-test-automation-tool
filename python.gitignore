@@ -96,7 +96,7 @@ def tap_at_coordinates(x, y):
     actions.w3c_actions.pointer_action.pointer_down()
     actions.w3c_actions.pointer_action.pointer_up()
     actions.perform()
-    time.sleep(3)  # 각 단계 후 3초간 대기 
+    time.sleep(2)  # 각 단계 후 2초간 대기 
 
 # 좌표 기반의 터치 시퀀스 실행
 tap_at_coordinates(304, 879)  # 아이디 창 터치
@@ -135,7 +135,7 @@ tap_at_coordinates(2245, 46)  # 랭킹 닫기
 
 # 이벤트 관련 시퀀스
 tap_at_coordinates(2013, 635)  # 이벤트 열기
-time.sleep(10)  # 10초 대기
+time.sleep(5)  # 5초 대기
 tap_at_coordinates(1993, 165)  # 이벤트 닫기
 tap_at_coordinates(2188, 635)  # 패스 열기
 tap_at_coordinates(2245, 46)  # 패스 닫기
@@ -153,6 +153,7 @@ tap_at_coordinates(2245, 46)  # 상점 닫기
 # 소환 관련 시퀀스
 tap_at_coordinates(787, 1045)  # 소환 진입
 tap_at_coordinates(1643, 1005)  # 픽업 캐릭터 10회 소환
+tap_at_coordinates(2218, 69)  # 소환 건너뛰기
 tap_at_coordinates(2218, 69)  # 소환 건너뛰기
 tap_at_coordinates(2245, 46)  # 소환 닫기
 tap_at_coordinates(2245, 46)  # 소환 아예 닫기
@@ -190,8 +191,16 @@ tap_at_coordinates(2053, 66)  # 포탈
 tap_at_coordinates(1861, 410)  # 챌린지
 tap_at_coordinates(2129, 1015)  # 챌린지 도전
 
-# 6000초 대기
-time.sleep(6000)
+# 6000초 동안 카운트다운 (60초마다 남은 시간 출력)
+remaining_time = 6000  # 총 대기 시간 (초)
+
+while remaining_time > 0:
+    print(f"남은 대기 시간: {remaining_time}초")
+    time.sleep(60)  # 60초 대기
+    remaining_time -= 60  # 60초 차감
+
+# 대기 종료 후 마지막으로 0초 출력
+print("대기 종료: 남은 시간 0초")
 
 # 성능 데이터 수집
 collect_performance_data()
