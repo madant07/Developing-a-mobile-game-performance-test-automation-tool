@@ -135,8 +135,8 @@ tap_at_coordinates(2053, 66)  # 포탈
 tap_at_coordinates(1861, 410)  # 챌린지
 tap_at_coordinates(2129, 1015)  # 챌린지 도전
 
-# 6000초 동안 카운트다운 (60초마다 남은 시간 출력)
-remaining_time = 6000  # 총 대기 시간 (초)
+# 3600초 동안 카운트다운 (60초마다 남은 시간 출력)
+remaining_time = 3600  # 총 대기 시간 (초)
 
 while remaining_time > 0:
     print(f"남은 대기 시간: {remaining_time}초")
