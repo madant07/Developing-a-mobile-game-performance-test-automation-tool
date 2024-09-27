@@ -1,0 +1,9 @@
+{
+"platformName": "Android",
+"platformVersion": "13",
+"deviceName": "R3CNC032JZM",
+"appPackage": "com.Cryptect.Mercenary",
+"appActivity": "com.unity3d.player.UnityPlayerActivity",
+"automationName": "UiAutomator2",
+"noReset": true
+}
