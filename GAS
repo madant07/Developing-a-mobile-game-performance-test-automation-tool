@@ -1,83 +1,123 @@
 function formatData() {
-  // 시트 가져오기
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  // 데이터가 있는 시트를 가져옵니다.
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   
-  // A1:A57 데이터 가져오기
-  var rawData = sheet.getRange('A1:A57').getValues().flat();
+  // A1:A 범위에서 데이터를 가져옵니다.
+  const rawData = sheet.getRange('A1:A').getValues();
   
-  // 빈값이나 undefined 체크 함수
-  function getDataOrEmpty(data, index, splitter = '') {
-    if (data[index] !== undefined && data[index] !== null && data[index] !== '') {
-      if (splitter) {
-        var parts = data[index].split(splitter);
-        if (parts.length > 1) {
-          return parts[1].trim();
-        }
-      }
-      return data[index].trim();
-    } else {
-      return '0';  // 값이 없을 경우 0 반환
+  // 데이터를 가공하여 C1:C 범위에 삽입할 배열을 만듭니다.
+  const formattedData = [];
+  let appInfo = '', frameStats = '', delayStats = '', histogram = '', cpuGpuStats = '', gpuHistogram = '', viewHierarchy = '', displayInfo = '';
+
+  rawData.forEach(row => {
+    const line = row[0].trim();
+
+    if (line.includes("Graphics info for pid")) {
+      appInfo = `1. 애플리케이션 정보\nPID: ${line.match(/pid (\d+)/)[1]}\n패키지명: ${line.match(/\[(.*)\]/)[1]}`;
     }
-  }
+    
+    if (line.includes("Pipeline")) {
+      appInfo += `\n그래픽 파이프라인: ${line.split('=')[1].trim()}`;
+    }
 
-  // 데이터를 가공하여 각 항목에 맞게 배열로 정리
-  var formattedData = [
-    "1. 애플리케이션 정보",
-    "PID: " + getDataOrEmpty(rawData, 0, 'PID '),
-    "패키지명: " + getDataOrEmpty(rawData, 2, '[PID ').split(' ')[0],
-    "그래픽 파이프라인: " + getDataOrEmpty(rawData, rawData.length - 3, '='),
-    "",
-    "2. 프레임 렌더링 통계",
-    "총 렌더링된 프레임: " + getDataOrEmpty(rawData, 5, ': '),
-    "Janky 프레임: " + getDataOrEmpty(rawData, 6, ': '),
-    "Janky 프레임 (legacy): " + getDataOrEmpty(rawData, 7, ': '),
-    "50번째 백분위수: " + getDataOrEmpty(rawData, 8, ': '),
-    "90번째 백분위수: " + getDataOrEmpty(rawData, 9, ': '),
-    "95번째 백분위수: " + getDataOrEmpty(rawData, 10, ': '),
-    "99번째 백분위수: " + getDataOrEmpty(rawData, 11, ': '),
-    "",
-    "3. 지연 원인 통계",
-    "Missed Vsync: " + getDataOrEmpty(rawData, 12, ': '),
-    "High input latency: " + getDataOrEmpty(rawData, 13, ': '),
-    "Slow UI thread: " + getDataOrEmpty(rawData, 14, ': '),
-    "Slow bitmap uploads: " + getDataOrEmpty(rawData, 15, ': '),
-    "Slow issue draw commands: " + getDataOrEmpty(rawData, 16, ': '),
-    "Frame deadline missed: " + getDataOrEmpty(rawData, 17, ': '),
-    "Frame deadline missed (legacy): " + getDataOrEmpty(rawData, 18, ': '),
-    "",
-    "4. CPU와 GPU 통계",
-    "CPU 캐시 메모리:",
-    getDataOrEmpty(rawData, 22),
-    getDataOrEmpty(rawData, 23),
-    "총 CPU 메모리 사용량: " + getDataOrEmpty(rawData, 25),
-    "",
-    "GPU 통계:",
-    "총 GPU 메모리 사용량: " + getDataOrEmpty(rawData, 29),
-    "50번째 백분위수: " + getDataOrEmpty(rawData, 30, ': '),
-    "90번째 백분위수: " + getDataOrEmpty(rawData, 31, ': '),
-    "95번째 백분위수: " + getDataOrEmpty(rawData, 32, ': '),
-    "99번째 백분위수: " + getDataOrEmpty(rawData, 33, ': '),
-    "",
-    "5. 히스토그램 (프레임 시간)",
-    "프레임 시간 분포 (ms):",
-    getDataOrEmpty(rawData, 35),
-    getDataOrEmpty(rawData, 36),
-    getDataOrEmpty(rawData, 37),
-    getDataOrEmpty(rawData, 38),
-    "",
-    "6. View Hierarchy 정보",
-    "총 ViewRootImpl: " + getDataOrEmpty(rawData, 53, ': '),
-    "총 View: " + getDataOrEmpty(rawData, 54, ': '),
-    "총 RenderNode 메모리 사용량: " + getDataOrEmpty(rawData, 55, ': '),
-    "",
-    "7. 디바이스 화면 정보",
-    "화면 해상도: " + getDataOrEmpty(rawData, rawData.length - 11, '='),
-    "디스플레이 회전: " + getDataOrEmpty(rawData, rawData.length - 9, '='),
-    "",
-    "8. 파이프라인 정보",
-    "그래픽 파이프라인: " + getDataOrEmpty(rawData, rawData.length - 3, '=')
-  ];
+    if (line.includes("Total frames rendered")) {
+      frameStats = `2. 프레임 렌더링 통계\n총 렌더링된 프레임: ${line.split(':')[1].trim()}`;
+    }
 
-  // C1부터 포맷된 데이터 붙여넣기
-  sheet.getRange(1, 3, formattedData.length, 1).setValues(formattedData.map(item => [item]));
+    if (line.includes("Janky frames")) {
+      frameStats += `\nJanky 프레임: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("50th percentile")) {
+      frameStats += `\n50번째 백분위수: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("90th percentile")) {
+      frameStats += `\n90번째 백분위수: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("95th percentile")) {
+      frameStats += `\n95번째 백분위수: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("99th percentile")) {
+      frameStats += `\n99번째 백분위수: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Number Missed Vsync")) {
+      delayStats = `3. 지연 원인 통계\nMissed Vsync: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("High input latency")) {
+      delayStats += `\nHigh input latency: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Slow UI thread")) {
+      delayStats += `\nSlow UI thread: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Slow bitmap uploads")) {
+      delayStats += `\nSlow bitmap uploads: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Frame deadline missed")) {
+      delayStats += `\nFrame deadline missed: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("HISTOGRAM")) {
+      histogram = `4. 히스토그램 (프레임 시간 분포)\n${line.replace('HISTOGRAM:', '').trim()}`;
+    }
+
+    if (line.includes("CPU Caches:")) {
+      cpuGpuStats = `5. CPU와 GPU 통계\nCPU 캐시 메모리: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Glyph Cache")) {
+      cpuGpuStats += `\nGlyph Cache: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Total CPU memory usage")) {
+      cpuGpuStats += `\n총 CPU 메모리 사용량: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Total GPU memory usage")) {
+      cpuGpuStats += `\n총 GPU 메모리 사용량: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("GPU HISTOGRAM")) {
+      gpuHistogram = `6. GPU 렌더링 시간 분포\n${line.replace('GPU HISTOGRAM:', '').trim()}`;
+    }
+
+    if (line.includes("View hierarchy")) {
+      viewHierarchy = `7. View Hierarchy 정보`;
+    }
+
+    if (line.includes("Total ViewRootImpl")) {
+      viewHierarchy += `\n총 ViewRootImpl: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Total attached Views")) {
+      viewHierarchy += `\n총 View 수: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("Total RenderNode")) {
+      viewHierarchy += `\n총 RenderNode 메모리 사용량: ${line.split(':')[1].trim()}`;
+    }
+
+    if (line.includes("ProcessConfig")) {
+      displayInfo = `8. 디바이스 화면 정보\n화면 해상도: ${line.match(/mBounds=Rect\((\d+), (\d+) - (\d+), (\d+)\)/).slice(3, 5).join(' x ')}\n디스플레이 회전: ${line.match(/ROTATION_(\d+)/)[1]}도`;
+    }
+  });
+
+  formattedData.push([appInfo]);
+  formattedData.push([frameStats]);
+  formattedData.push([delayStats]);
+  formattedData.push([histogram]);
+  formattedData.push([cpuGpuStats]);
+  formattedData.push([gpuHistogram]);
+  formattedData.push([viewHierarchy]);
+  formattedData.push([displayInfo]);
+
+  // C1:C에 데이터를 넣습니다.
+  sheet.getRange(1, 3, formattedData.length, 1).setValues(formattedData);
 }
