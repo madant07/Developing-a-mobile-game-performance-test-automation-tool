@@ -71,7 +71,6 @@ def check_for_anomalies():
     if temperature > 40:
         take_screenshot(driver, "High_Temperature")
 
-
 # Appium 옵션 설정
 options = UiAutomator2Options()
 options.platform_name = "Android"
