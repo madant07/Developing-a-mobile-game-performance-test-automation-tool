@@ -104,7 +104,7 @@ tap_at_coordinates(1848, 417)  # 키보드 텍스트 입력창 터치
 
 # '지우기' 반복 5회
 for _ in range(5):
-    tap_at_coordinates(1851, 668)  # 지우기
+    tap_at_coordinates(2119, 926)  # 지우기
 
 # 텍스트 입력 (좌표 기반)
 tap_at_coordinates(1607, 926)  # B 입력
