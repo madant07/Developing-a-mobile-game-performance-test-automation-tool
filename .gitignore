@@ -1,7 +1,7 @@
 from appium.options.android import UiAutomator2Options
 from appium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains  # W3C Actions 사용
-from selenium.webdriver.common.actions.pointer_input import PointerInput  # 포인터 입력 사용
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 import subprocess
 import time
 
@@ -11,13 +11,13 @@ def collect_performance_data():
     result = subprocess.run(['adb', 'shell', 'dumpsys', 'gfxinfo', 'com.Cryptect.Mercenary'], capture_output=True, text=True)
     
     # 수집한 데이터를 지정된 경로에 성능 로그 파일로 저장
-    log_file_path = r'C:\Users\bobGate\Downloads\테스트 자동화 로그파일\performance_data.txt'  # 파일 경로
+    log_file_path = r'C:\Users\bobGate\Downloads\테스트 자동화 로그파일\performance_data.txt'
     with open(log_file_path, 'w') as file:
         file.write(result.stdout)
 
     # CPU 사용량 수집
     cpu_usage = subprocess.run(['adb', 'shell', 'top', '-n', '1', '|', 'grep', 'com.Cryptect.Mercenary'], capture_output=True, text=True)
-    with open(log_file_path, 'a') as file:  # 기존 파일에 추가
+    with open(log_file_path, 'a') as file:
         file.write(f"\nCPU 사용량: {cpu_usage.stdout}")
 
     # 메모리 사용량 수집
@@ -45,62 +45,58 @@ def collect_performance_data():
     with open(log_file_path, 'a') as file:
         file.write(f"\n프레임 드롭 빈도: {frame_drop_info.stdout}")
 
-# 특이사항 발생 시 스크린샷을 촬영하는 함수
+# 스크린샷 촬영 함수
 def take_screenshot(driver, issue_desc):
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     screenshot_path = f'C:/Users/bobGate/Downloads/테스트 자동화 로그파일/screenshot_{issue_desc}_{timestamp}.png'
     driver.save_screenshot(screenshot_path)
     print(f"특이사항 발생: {issue_desc}, 스크린샷 저장 위치: {screenshot_path}")
 
-# 특이사항을 체크하는 함수 (FPS, CPU, 메모리 등)
+# 특이사항 체크 함수
 def check_for_anomalies():
-    # FPS가 30 이하로 떨어졌을 때
-    fps = 25  # 예시로 FPS를 직접 설정 (실제는 FPS 수집 함수 필요)
+    # FPS, CPU, 메모리 등 임의로 설정한 값 기반
+    fps = 25
     if fps < 30:
         take_screenshot(driver, "Low_FPS")
-
-    # CPU 사용량이 90% 이상일 때
-    cpu_usage = 92  # 예시로 CPU 사용량 직접 설정 (실제는 수집 함수 필요)
+    
+    cpu_usage = 92
     if cpu_usage > 90:
         take_screenshot(driver, "High_CPU_Usage")
 
-    # 메모리 사용량이 1GB 이상일 때
-    memory_usage = 1200  # 예시로 메모리 사용량 직접 설정 (실제는 수집 함수 필요)
+    memory_usage = 1200
     if memory_usage > 1024:
         take_screenshot(driver, "High_Memory_Usage")
 
-    # 배터리 온도가 40도 이상일 때
-    temperature = 42  # 예시로 온도를 직접 설정 (실제는 수집 함수 필요)
+    temperature = 42
     if temperature > 40:
         take_screenshot(driver, "High_Temperature")
 
-# Appium 옵션 설정 (capabilities)
+# Appium 옵션 설정
 options = UiAutomator2Options()
 options.platform_name = "Android"
-options.platform_version = "13"  # 실제 기기 Android 버전
-options.device_name = "R3CNC032JZM"  # ADB로 확인한 실제 기기명
-options.app_package = "com.Cryptect.Mercenary"  # 게임의 패키지 이름
-options.app_activity = "com.unity3d.player.UnityPlayerActivity"  # 메인 액티비티
-options.automation_name = "UiAutomator2"  # Android 자동화 프레임워크
-options.no_reset = True  # 앱 데이터를 리셋하지 않음
+options.platform_version = "13"
+options.device_name = "R3CNC032JZM"
+options.app_package = "com.Cryptect.Mercenary"
+options.app_activity = "com.unity3d.player.UnityPlayerActivity"
+options.automation_name = "UiAutomator2"
+options.no_reset = True
 
-# Appium 서버 연결 (루트 경로 사용)
+# Appium 서버 연결
 driver = webdriver.Remote('http://127.0.0.1:4723', options=options)
 
 # 게임 실행 후 30초 동안 대기
 time.sleep(30)
 
-# 포인터 액션 정의 (터치 기반 이벤트)
+# 터치 액션 정의
 pointer = PointerInput(PointerInput.TOUCH, "finger")
 actions = ActionChains(driver)
 
-# 터치 액션 정의 (각 좌표에서 수행)
 def tap_at_coordinates(x, y):
     actions.w3c_actions.pointer_action.move_to_location(x, y)
     actions.w3c_actions.pointer_action.pointer_down()
     actions.w3c_actions.pointer_action.pointer_up()
     actions.perform()
-    time.sleep(3)  # 각 동작 후 3초 대기
+    time.sleep(3)  # 각 단계 후 3초간 대기 
 
 # 좌표 기반의 터치 시퀀스 실행
 tap_at_coordinates(304, 879)  # 아이디 창 터치
@@ -194,8 +190,14 @@ tap_at_coordinates(2053, 66)  # 포탈
 tap_at_coordinates(1861, 410)  # 챌린지
 tap_at_coordinates(2129, 1015)  # 챌린지 도전
 
-# 6000초 대기 (100분)
+# 6000초 대기
 time.sleep(6000)
 
-# 테스트 종료
+# 성능 데이터 수집
+collect_performance_data()
+
+# 특이사항 체크
+check_for_anomalies()
+
+# Appium 종료
 driver.quit()
