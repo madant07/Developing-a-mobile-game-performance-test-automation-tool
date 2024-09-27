@@ -1,162 +1,104 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+from appium.options.android import UiAutomator2Options
+from appium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains  # W3C Actions 사용
+from selenium.webdriver.common.actions.pointer_input import PointerInput  # 포인터 입력 사용
+import subprocess
+import time
 
-# C extensions
-*.so
+# 성능 데이터 수집 함수 (ADB 명령어 실행)
+def collect_performance_data():
+    # ADB 명령어 실행 (프레임 속도 수집)
+    result = subprocess.run(['adb', 'shell', 'dumpsys', 'gfxinfo', 'com.Cryptect.Mercenary'], capture_output=True, text=True)
+    
+    # 수집한 데이터를 지정된 경로에 성능 로그 파일로 저장
+    log_file_path = r'C:\Users\bobGate\Downloads\테스트 자동화 로그파일\performance_data.txt'  # 파일 경로
+    with open(log_file_path, 'w') as file:
+        file.write(result.stdout)
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# Appium 옵션 설정 (capabilities)
+options = UiAutomator2Options()
+options.platform_name = "Android"
+options.platform_version = "13"  # 실제 기기 Android 버전
+options.device_name = "R3CNC032JZM"  # ADB로 확인한 실제 기기명
+options.app_package = "com.Cryptect.Mercenary"  # 게임의 패키지 이름
+options.app_activity = "com.unity3d.player.UnityPlayerActivity"  # 메인 액티비티
+options.automation_name = "UiAutomator2"  # Android 자동화 프레임워크
+options.no_reset = True  # 앱 데이터를 리셋하지 않음
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Appium 서버 연결 (루트 경로 사용)
+driver = webdriver.Remote('http://127.0.0.1:4723', options=options)
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# 게임 실행 후 30초 동안 대기
+time.sleep(30)
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+# 포인터 액션 정의 (터치 기반 이벤트)
+pointer = PointerInput(PointerInput.TOUCH, "finger")
+actions = ActionChains(driver)
 
-# Translations
-*.mo
-*.pot
+# 터치 액션 정의 (각 좌표에서 수행)
+def tap_at_coordinates(x, y):
+    actions.w3c_actions.pointer_action.move_to_location(x, y)
+    actions.w3c_actions.pointer_action.pointer_down()
+    actions.w3c_actions.pointer_action.pointer_up()
+    actions.perform()
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+# 1. X 232 / Y 897 터치
+tap_at_coordinates(232, 897)
+time.sleep(5)  # 5초 대기
 
-# Flask stuff:
-instance/
-.webassets-cache
+# 2. X 892 / Y 405 터치
+tap_at_coordinates(892, 405)
+time.sleep(5)  # 5초 대기
 
-# Scrapy stuff:
-.scrapy
+# 3. X 2133 / Y 925 20번 터치
+for _ in range(20):
+    tap_at_coordinates(2133, 925)
+    time.sleep(5)  # 5초 대기
 
-# Sphinx documentation
-docs/_build/
+# 4. X 1622 / Y 929 터치
+tap_at_coordinates(1622, 929)
+time.sleep(5)  # 5초 대기
 
-# PyBuilder
-.pybuilder/
-target/
+# 5. X 2083 / Y 829 터치
+tap_at_coordinates(2083, 829)
+time.sleep(5)  # 5초 대기
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# 6. X 1622 / Y 929 터치
+tap_at_coordinates(1622, 929)
+time.sleep(5)  # 5초 대기
 
-# IPython
-profile_default/
-ipython_config.py
+# 7. X 2163 / Y 650 터치
+tap_at_coordinates(2163, 650)
+time.sleep(5)  # 5초 대기
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
+# 8. X 285 / Y 650 터치
+tap_at_coordinates(285, 650)
+time.sleep(5)  # 5초 대기
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
+# 9. X 2176 / Y 411 터치
+tap_at_coordinates(2176, 411)
+time.sleep(5)  # 5초 대기
 
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
+# 10. X 521 / Y 929 터치
+tap_at_coordinates(521, 929)
+time.sleep(5)  # 5초 대기
 
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
-.pdm.toml
-.pdm-python
-.pdm-build/
+# 11. X 521 / Y 929 터치 (다시 터치)
+tap_at_coordinates(521, 929)
+time.sleep(30)  # 30초 대기
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
+# 12. X 1924 / Y 1048 터치
+tap_at_coordinates(1924, 1048)
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+# 600초 동안 카운트다운 (60초마다 남은 시간 출력)
+remaining_time = 600
+while remaining_time > 0:
+    time.sleep(60)
+    remaining_time -= 60
+    print(f"남은 시간: {remaining_time}초")
 
-# SageMath parsed files
-*.sage.py
+# 성능 데이터 수집 함수 실행
+collect_performance_data()
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+# 테스트 종료 (Appium 세션 종료)
+driver.quit()
