@@ -5,12 +5,12 @@ from selenium.webdriver.common.actions.pointer_input import PointerInput  # 포�
 import subprocess
 import time
 
-# 성능 데이터 수집 함수 (ADB 명령어 실행)
+# 성능 데이터 수집
 def collect_performance_data():
 # ADB 명령어 실행 (프레임 속도 수집)
 result = subprocess.run(['adb', 'shell', 'dumpsys', 'gfxinfo', 'com.Cryptect.Mercenary'], capture_output=True, text=True)
 
-# 수집한 데이터를 지정된 경로에 성능 로그 파일로 저장
+# 수집한 데이터를 파일로 저장
 log_file_path = r'C:\Users\bobGate\Downloads\테스트 자동화 로그파일\performance_data.txt'  # 파일 경로
 with open(log_file_path, 'w') as file:
 file.write(result.stdout)
